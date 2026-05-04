@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Edition {{ quarter }} — Wego Earnings Digest{% endblock %}
+{% block content %}
+<section class="edition-page">
+  <a href="{{ url_for('index') }}" class="back">← all editions</a>
+  <header class="edition-header">
+    <div>
+      <span class="eyebrow">Edition · {{ quarter }}</span>
+      <h1>The competitive read for this quarter</h1>
+    </div>
+    <div class="edition-actions">
+      <a href="{{ url_for('forward_edition', quarter=quarter) }}" class="btn btn-primary">Forward as email</a>
+      <button class="btn" onclick="navigator.clipboard.writeText(document.querySelector('article.digest').innerText); this.textContent='Copied'">Copy text</button>
+    </div>
+  </header>
+
+  <nav class="edition-toolbar">
+    <span class="toolbar-label">Per-company:</span>
+    {% for c in companies %}
+      {% if c.synthesized or c.was_flagged %}
+        <a href="{{ url_for('company', slug=c.slug) }}" class="chip">
+          {{ c.ticker }} · {{ c.quarter }}{% if c.still_flagged %} ⚠{% endif %}
+        </a>
+      {% endif %}
+    {% endfor %}
+  </nav>
+
+  <article class="prose digest">
+    {{ body_html | safe }}
+  </article>
+</section>
+{% endblock %}

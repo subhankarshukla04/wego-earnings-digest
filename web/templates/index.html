@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <h1>Quarterly competitive intelligence for Wego Strategy.</h1>
+  <p class="lede">
+    Each edition synthesises competitor earnings calls into a single brief — what each firm said this quarter, what it means for Wego.
+    Verbatim quotes, profile-grounded implications, hallucinations auto-rewritten before publish.
+  </p>
+</section>
+
+<section class="card-grid">
+  <h2>Editions</h2>
+  {% if editions %}
+  <ul class="editions">
+    {% for e in editions %}
+    <li>
+      <a href="{{ url_for('edition', quarter=e.quarter) }}">
+        <div>
+          <span class="edition-quarter">Edition · {{ e.quarter }}</span>
+          <span class="edition-meta">UPDATED {{ e.mtime.strftime('%Y-%m-%d') }} · {{ e.size_kb }} KB · ~5 MIN READ</span>
+        </div>
+        <span class="edition-arrow">→</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="empty">No editions yet. Hit "Run pipeline" to generate one.</p>
+  {% endif %}
+</section>
+
+<section class="card-grid">
+  <h2>Coverage</h2>
+  <table class="coverage">
+    <thead>
+      <tr><th>Company</th><th>Ticker</th><th>Quarter</th><th>Call</th><th>Status</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for c in companies %}
+      <tr>
+        <td>{{ c.name }}{% if c.user_added %} <span class="chip" style="font-size:10px;padding:1px 7px">added</span>{% endif %}</td>
+        <td><code>{{ c.ticker }}</code></td>
+        <td><span class="mono" style="font-size:12.5px;color:var(--ink-mid)">{{ c.quarter }}</span></td>
+        <td>
+          {% if c.call_date %}
+            <span class="freshness {{ c.freshness }}"><span class="freshness-dot"></span>{{ c.age_days }}d</span>
+          {% else %}
+            <span class="freshness unknown"><span class="freshness-dot"></span>—</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if c.still_flagged %}<span class="status flagged">flagged · {{ c.high_count }} unresolved</span>
+          {% elif c.was_flagged and c.synthesized %}<span class="status fixed">fixed · {{ c.high_count }} addressed</span>
+          {% elif c.synthesized and c.high_count == 0 and c.critique_count == 0 %}<span class="status ok">clean</span>
+          {% elif c.synthesized %}<span class="status reviewed">reviewed · {{ c.critique_count }} note(s)</span>
+          {% else %}<span class="status missing">no brief</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if c.synthesized or c.was_flagged %}<a href="{{ url_for('company', slug=c.slug) }}" class="row-link">read →</a>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="card-grid" id="paste">
+  <h2>Add a transcript</h2>
+  <div class="paste-card">
+    <p class="lede-sm">Paste any earnings call transcript and the pipeline runs on it — extract, synthesise, critique, fixup, then folds it into the current edition. Use this for new competitors or quarters not yet auto-fetched.</p>
+    <form method="POST" action="{{ url_for('paste_transcript') }}">
+      <div class="paste-row">
+        <div><label>Company name</label><input name="name" placeholder="e.g. Trip.com Group" required maxlength="60"></div>
+        <div><label>Ticker</label><input name="ticker" placeholder="TCOM" required maxlength="10"></div>
+        <div><label>Quarter</label><input name="quarter" placeholder="2025Q4" required pattern="\d{4}Q[1-4]"></div>
+        <div><label>Call date</label><input name="call_date" type="date" placeholder="YYYY-MM-DD"></div>
+      </div>
+      <div>
+        <label>Transcript</label>
+        <textarea name="transcript" placeholder="Paste the full verbatim transcript here. The pipeline expects ≥1,000 characters of continuous text — operator prologue, prepared remarks, Q&A. Paywalled sources work; just paste." required></textarea>
+      </div>
+      <div class="paste-actions">
+        <span class="hint">Stays local — written to /raw, processed, then archived.</span>
+        <button type="submit" class="btn btn-primary">Run pipeline on this</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+{% if running %}
+<section class="card-grid">
+  <h2>Pipeline running</h2>
+  <ol class="run-steps" id="run-steps">
+    {% for s, _, label in steps %}
+    <li data-step="{{ s }}"><span class="run-dot"></span><span class="run-step-name">{{ s }}</span><span class="run-step-label">{{ label }}</span></li>
+    {% endfor %}
+  </ol>
+  <details class="run-log-block">
+    <summary>Show raw output</summary>
+    <pre id="run-log"></pre>
+  </details>
+</section>
+<script>
+const STEP_ORDER = {{ steps | map(attribute=0) | list | tojson }};
+async function tick() {
+  const r = await fetch("/run/status");
+  const j = await r.json();
+  const stepName = (j.step || "").split(":")[0];
+  const idx = STEP_ORDER.indexOf(stepName);
+  document.querySelectorAll("#run-steps li").forEach((li, i) => {
+    li.classList.remove("done", "active");
+    if (j.step === "done" || (idx >= 0 && i < idx)) li.classList.add("done");
+    else if (idx >= 0 && i === idx) li.classList.add("active");
+  });
+  document.getElementById("run-log").textContent = (j.log || []).slice(-30).join("\n");
+  if (j.running) setTimeout(tick, 2000);
+  else setTimeout(() => location.reload(), 1500);
+}
+tick();
+</script>
+{% elif last_run %}
+<section class="card-grid subtle">
+  <p class="muted">Last run · {{ last_run[:19].replace("T", " ") }} UTC</p>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}{{ info.name }} {{ info.raw_quarter }} — Wego Earnings Digest{% endblock %}
+{% block content %}
+<section class="edition-page">
+  <a href="{{ url_for('index') }}" class="back">← all editions</a>
+
+  <nav class="company-nav">
+    {% for c in nav_companies %}
+      <a href="{{ url_for('company', slug=c.slug) }}" class="company-tab {% if c.slug == current_slug %}active{% endif %}">
+        {{ c.ticker }}{% if c.still_flagged %} ⚠{% endif %}
+      </a>
+    {% endfor %}
+  </nav>
+
+  {% if is_flagged %}
+  <div class="banner banner-flagged">
+    ⚠ Flagged by the critique pass and not auto-fixed. Review the notes below before forwarding.
+  </div>
+  {% endif %}
+
+  {% if age_days is not none and age_days > 120 %}
+  <div class="banner banner-stale">
+    This call was held {{ age_days }} days ago. A newer quarter may be released — check the company's IR page before relying on these implications.
+  </div>
+  {% endif %}
+
+  <header class="company-header">
+    <div class="company-header-top">
+      <div>
+        <span class="eyebrow">{{ info.ticker }} · {{ info.raw_quarter }}</span>
+        <h1>{{ sections.heading or info.name }}</h1>
+        <div class="company-meta-row">
+          {% if call_date %}
+            <span class="freshness {{ 'fresh' if age_days <= 60 else ('aging' if age_days <= 120 else 'stale') }}">
+              <span class="freshness-dot"></span>
+              Call · {{ call_date }} ({{ age_days }} days ago)
+            </span>
+          {% endif %}
+        </div>
+      </div>
+      <div class="edition-actions">
+        <a href="{{ url_for('forward_company', slug=current_slug) }}" class="btn btn-primary">Forward as email</a>
+        <button class="btn" onclick="navigator.clipboard.writeText(document.querySelector('.brief-grid').innerText); this.textContent='Copied'">Copy</button>
+      </div>
+    </div>
+    {% if sections.stance %}<p class="stance">{{ sections.stance }}</p>{% endif %}
+  </header>
+
+  <div class="brief-grid">
+    <article class="brief-col">
+      <h2 class="brief-label">
+        <span>What the firm said</span>
+        <button class="btn btn-ghost flag-btn" data-section="firm" data-slug="{{ current_slug }}">⚑ Flag</button>
+      </h2>
+      <div class="prose">{{ sections.firm_html | safe }}</div>
+    </article>
+    <article class="brief-col brief-col-wego">
+      <h2 class="brief-label">
+        <span>What this means for Wego</span>
+        <button class="btn btn-ghost flag-btn" data-section="wego" data-slug="{{ current_slug }}">⚑ Flag</button>
+      </h2>
+      <div class="prose">{{ sections.wego_html | safe }}</div>
+    </article>
+  </div>
+
+  {% if sections.appendix_html %}
+  <details class="appendix-block">
+    <summary>Quote appendix · every retained verbatim quote</summary>
+    <div class="prose appendix-prose">{{ sections.appendix_html | safe }}</div>
+  </details>
+  {% endif %}
+
+  {% if issues %}
+  <details class="critique-block">
+    <summary>Critique trail · {{ issues|length }} note{{ '' if issues|length == 1 else 's' }} from the fact-checker</summary>
+    <ul>
+      {% for i in issues %}
+      <li class="severity-{{ i.severity }}">
+        <span class="badge">{{ i.severity }}</span>
+        <span class="quote">"{{ i.quote }}"</span>
+        <div class="issue"><strong>Issue:</strong> {{ i.issue }}</div>
+        <div class="fix"><strong>Fix:</strong> {{ i.fix }}</div>
+      </li>
+      {% endfor %}
+    </ul>
+  </details>
+  {% endif %}
+</section>
+
+<script>
+document.querySelectorAll(".flag-btn").forEach(btn => {
+  btn.addEventListener("click", async () => {
+    const section = btn.dataset.section;
+    const slug = btn.dataset.slug;
+    const note = prompt("What's wrong with this paragraph? (1-2 lines)");
+    if (note === null) return;
+    await fetch("/flag", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({slug, section, note}),
+    });
+    const t = document.createElement("div");
+    t.className = "toast"; t.textContent = "Flagged · saved to data/flags.jsonl";
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2400);
+  });
+});
+</script>
+{% endblock %}

@@ -1,9 +1,13 @@
 import sys
+import ssl
 import json
 import time
 import urllib.request
 import urllib.error
+import certifi
 from .config import OPENROUTER_API_KEY, OPENROUTER_BASE, MODEL
+
+_SSL_CTX = ssl.create_default_context(cafile=certifi.where())
 
 
 def call(system: str, user: str, *, model: str = MODEL, max_tokens: int = 4096, temperature: float = 0.2) -> str:
@@ -34,7 +38,7 @@ def call(system: str, user: str, *, model: str = MODEL, max_tokens: int = 4096, 
     last_err = None
     for attempt in range(3):
         try:
-            with urllib.request.urlopen(req, timeout=180) as r:
+            with urllib.request.urlopen(req, timeout=180, context=_SSL_CTX) as r:
                 body = json.loads(r.read().decode("utf-8"))
                 return body["choices"][0]["message"]["content"]
         except urllib.error.HTTPError as e:

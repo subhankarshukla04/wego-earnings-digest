@@ -32,7 +32,7 @@ def main():
     summary_system = (
         "You are the Wego VP of Strategy & Planning's chief of staff. "
         "Read these per-company strategic briefs and write a 5-bullet executive summary "
-        "for Ned Terziev (VP Strategy) to forward to Ross Veitch (CEO). "
+        "for the Strategy team to forward to senior leadership. "
         "Each bullet: 1 line of the most strategically important cross-cutting signal across the calls. "
         "Lead with the highest-impact bullet. No filler, no 'in summary' framing — just the 5 bullets."
     )

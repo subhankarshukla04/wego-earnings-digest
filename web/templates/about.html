@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}How it works — Wego Earnings Digest{% endblock %}
+{% block content %}
+<section class="about-page">
+  <a href="{{ url_for('index') }}" class="back">← back</a>
+  <header class="about-header">
+    <span class="eyebrow">Methodology</span>
+    <h1>How an edition gets made.</h1>
+    <p class="lede">Six stages, ~5 minutes of compute per quarter. Every claim about a competitor traces back to a verbatim earnings-call quote. Every claim about Wego traces back to a sanctioned profile fact.</p>
+  </header>
+
+  <ol class="pipeline">
+    {% for slug, _, label in steps %}
+    <li>
+      <span class="step-num">{{ loop.index }}</span>
+      <div>
+        <h3>{{ slug }}</h3>
+        <p>{{ label }}.</p>
+        <p class="step-detail">
+          {% if slug == 'fetch' %}Tries Motley Fool → Investing.com → Seeking Alpha for each ticker. Caches transcripts on disk; later runs skip already-cached files.
+          {% elif slug == 'extract' %}LLM filters the transcript through nine Wego-relevance lenses (MENA, India, SEA, AI distribution, capital, marketing/SEO, partnerships, look-to-book, forward guidance) and emits one JSON line per relevant passage.
+          {% elif slug == 'synthesize' %}LLM converts passages into a two-paragraph brief. The Wego Profile is injected as ground truth; a "Wego does NOT have" block locks the negative space; numeric-transfer and partner-list rules constrain attribution.
+          {% elif slug == 'critique' %}A second LLM call audits the brief against the Wego Profile. Any high-severity hallucination (invented capability, invented partnership, untagged number, profile contradiction) moves the brief to a <code>.flagged.md</code> artifact for the next stage.
+          {% elif slug == 'fixup' %}LLM rewrites only the "What this means for Wego" paragraph using the critique notes as guidance. The original flagged version is preserved on disk as an audit trail.
+          {% elif slug == 'compose' %}The clean per-company briefs are stitched into a single edition. A final LLM call writes the five-bullet executive summary on top.
+          {% endif %}
+        </p>
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+
+  <section class="about-section">
+    <h2>What makes the implications trustworthy</h2>
+    <div class="trust-grid">
+      <div class="trust-card">
+        <h3>Negative space</h3>
+        <p>The synthesis prompt enumerates what Wego <em>does not</em> have — no direct booking funnel, no owned LLM, no voice interface, no car-rental vertical. This kills 80% of "modern travel app" hallucinations the model would otherwise invent.</p>
+      </div>
+      <div class="trust-card">
+        <h3>Refusal quota</h3>
+        <p>If the firm's commentary touches a theme outside Wego's surface area, the brief must include an explicit <em>"no direct read for Wego on [topic]"</em>. Absence is named, not filled.</p>
+      </div>
+      <div class="trust-card">
+        <h3>Critique pass</h3>
+        <p>A second LLM call audits the brief and flags hallucinations by severity. High-severity claims are auto-rewritten by the fixup pass before the brief is published.</p>
+      </div>
+      <div class="trust-card">
+        <h3>Tested ceiling</h3>
+        <p>Run-loop calibration: 17 hallucinations in baseline → 0 in tier 3, across 8 runs over 4 companies. The pipeline is at the empirical floor of what this stack can produce.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-section">
+    <h2>What's not automated yet</h2>
+    <ul class="todo-list">
+      <li><strong>TCOM transcripts</strong> — Trip.com is a Chinese ADR; US transcript aggregators don't cover it consistently. Fetched manually when needed.</li>
+      <li><strong>Semantic deduplication</strong> — if two firms say nearly the same thing, both currently appear. A diffing pass could collapse those.</li>
+      <li><strong>Time-series view</strong> — once two editions exist, a side-by-side delta view will show what changed quarter-over-quarter.</li>
+    </ul>
+  </section>
+</section>
+{% endblock %}

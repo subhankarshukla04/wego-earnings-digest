@@ -92,9 +92,9 @@ The final `output/digest_2026Q1.md` contains:
 ## Cost & cadence
 
 - Per-run cost: ~$0.30–0.80 in OpenRouter credits (5 transcripts × 2 LLM passes + 1 compose pass with Sonnet)
-- Quarterly cadence: drop in new transcripts, run `make digest`, edit output by hand if needed, share with Ned
+- Quarterly cadence: drop in new transcripts, run `make digest`, edit output by hand if needed, share with Strategy
 - Wall time: ~5 minutes of compute
 
 ## Built by
 
-Subhankar Shukla — interview deliverable for Wego NOC role with Nedyalko Terziev.
+Subhankar Shukla — interview deliverable for Wego NOC role.

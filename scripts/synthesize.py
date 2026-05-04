@@ -29,15 +29,13 @@ def synthesize_one(slug: str):
         f"COMPANY: {info['name']} ({info['ticker']})\n"
         f"QUARTER: {info['raw_quarter']}\n\n"
         f"EXTRACTED PASSAGES (one JSON per line):\n{passages}\n\n"
-        f"Begin output with markdown heading: "
-        f"`## {info['name']} ({info['ticker']}) · {info['raw_quarter']}`\n"
-        f"Add a one-line italic summary of the call's overall stance (<=20 words), "
-        f"then the bullets per the system prompt format."
+        f"Produce the brief exactly per the system-prompt format. "
+        f"Heading: `## {info['name']} ({info['ticker']}) · {info['raw_quarter']}`."
     )
 
     n = sum(1 for line in passages.splitlines() if line.strip())
     print(f"[{slug}] synthesizing {n} passages...", file=sys.stderr)
-    response = call(system, user, max_tokens=4000, temperature=0.3)
+    response = call(system, user, max_tokens=6000, temperature=0.3)
     out_path.write_text(response, encoding="utf-8")
     print(f"[{slug}] → {out_path.name}", file=sys.stderr)
     return out_path
