@@ -4,30 +4,61 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}Wego Earnings Digest{% endblock %}</title>
+<meta name="theme-color" content="#08080f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-<header class="topbar">
+<div class="orb-warm" aria-hidden="true"></div>
+
+<header class="topbar" id="topbar">
   <div class="topbar-inner">
     <a href="{{ url_for('index') }}" class="brand">
       <span class="brand-mark">W</span>
       <span class="brand-text">
         <span class="brand-line1">Wego Earnings Digest</span>
-        <span class="brand-line2">Quarterly competitive intelligence</span>
+        <span class="brand-line2">Quarterly competitive intel</span>
       </span>
     </a>
     <nav>
-      <a href="{{ url_for('index') }}">Editions</a>
-      <a href="{{ url_for('about') }}">How it works</a>
+      <a href="{{ url_for('index') }}" data-route="index">Editions</a>
+      <a href="{{ url_for('about') }}" data-route="about">Methodology</a>
       <a href="{{ url_for('run') }}" class="run-btn">Run pipeline</a>
     </nav>
   </div>
 </header>
+<script>
+(function () {
+  var bar = document.getElementById('topbar');
+  var onScroll = function () {
+    if (window.scrollY > 8) bar.classList.add('scrolled');
+    else bar.classList.remove('scrolled');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  var path = window.location.pathname;
+  document.querySelectorAll('nav a[data-route]').forEach(function (a) {
+    var r = a.getAttribute('data-route');
+    if ((r === 'index' && path === '/') || (r === 'about' && path.indexOf('/about') === 0)) {
+      a.classList.add('active');
+    }
+  });
+})();
+</script>
+
 <main>{% block content %}{% endblock %}</main>
+
 <footer>
   <div class="footer-inner">
-    <span>Built by Subhankar Shukla · {{ '2026' }}</span>
-    <span class="footer-meta">Public earnings transcripts → LLM synthesis → quarterly digest. <a href="{{ url_for('about') }}">Pipeline →</a></span>
+    <span class="colophon">
+      <span class="colophon-mark">W</span>
+      <span>Subhankar Shukla &middot; 2026</span>
+    </span>
+    <span class="footer-meta">
+      Set in Geist &amp; Fraunces &middot; Earnings transcripts &rarr; LLM synthesis &rarr; quarterly brief.
+      <a href="{{ url_for('about') }}">Methodology &rarr;</a>
+    </span>
   </div>
 </footer>
 </body>
