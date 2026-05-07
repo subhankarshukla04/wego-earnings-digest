@@ -142,15 +142,57 @@ def _slugify(name: str) -> str:
     return s[:8] or "company"
 
 
+def _featured_edition(quarter: str) -> dict | None:
+    path = OUTPUT_DIR / f"digest_{quarter}.md"
+    if not path.exists():
+        return None
+    src = path.read_text(encoding="utf-8")
+    summary_m = re.search(
+        r"##\s+Executive [Ss]ummary[^\n]*\n(.*?)(?=\n##\s|\Z)",
+        src, re.DOTALL,
+    )
+    bullets: list[dict] = []
+    if summary_m:
+        block = summary_m.group(1).strip()
+        items = re.split(r"\n(?=(?:[-*]\s|\d+\.\s))", block)
+        for raw in items:
+            raw = raw.strip()
+            if not re.match(r"^(?:[-*]\s|\d+\.\s)", raw):
+                continue
+            body = re.sub(r"^(?:[-*]\s+|\d+\.\s+)", "", raw).strip()
+            body = re.sub(r"\s+", " ", body)
+            heading_m = re.match(r"\*\*(.+?)\*\*\s*(.*)", body, re.DOTALL)
+            if heading_m:
+                lead = heading_m.group(1).strip()
+                rest = heading_m.group(2).strip()
+            else:
+                first = re.match(r"([^.]+\.)\s*(.*)", body, re.DOTALL)
+                if first and len(first.group(1)) <= 110:
+                    lead = first.group(1).rstrip(".").strip()
+                    rest = first.group(2).strip()
+                else:
+                    lead = ""
+                    rest = body
+            if rest and not rest.endswith((".", "!", "?")):
+                rest += "."
+            bullets.append({"lead": lead, "rest": rest})
+    return {
+        "quarter": quarter,
+        "bullets": bullets[:5],
+    }
+
+
 @app.route("/")
 def index():
     editions = _list_editions()
     companies = _list_companies(QUARTER)
+    featured = _featured_edition(editions[0]["quarter"]) if editions else None
     return render_template(
         "index.html",
         editions=editions,
         current_quarter=QUARTER,
         companies=companies,
+        featured=featured,
         running=_PIPELINE_STATE["running"],
         last_run=_PIPELINE_STATE["ended_at"] or _PIPELINE_STATE["started_at"],
         steps=PIPELINE_STEPS,

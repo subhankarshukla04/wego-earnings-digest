@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wego Earnings Digest — Edition 01 · 2026Q1</title>
+<style>
+:root {
+  --ink: #111418;
+  --ink-soft: #2a2f36;
+  --ink-mute: #555c66;
+  --ink-faint: #8a929c;
+  --accent: #14365c;
+  --accent-soft: #2c5b8a;
+  --rule: #d9dde2;
+  --rule-soft: #ebeef2;
+  --bg-soft: #f7f8fa;
+  --bg-quote: #fbfcfd;
+}
+
+@page {
+  size: Letter;
+  margin: 0.7in 0.8in 0.85in 0.8in;
+  @bottom-left { content: "Wego Earnings Digest \2014  Edition 01"; font-family: "Inter", "Helvetica Neue", sans-serif; font-size: 8pt; color: #8a929c; }
+  @bottom-right { content: "Page " counter(page) " of " counter(pages); font-family: "Inter", "Helvetica Neue", sans-serif; font-size: 8pt; color: #8a929c; }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Inter", -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.5;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "ss01", "cv11", "tnum";
+}
+
+/* --- Top masthead --- */
+h1 {
+  font-family: "Inter", "Helvetica Neue", sans-serif;
+  font-size: 22pt;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin: 0 0 2pt 0;
+  color: var(--ink);
+  border: none;
+  padding: 0;
+  line-height: 1.15;
+}
+
+h1 + p em {
+  font-style: italic;
+  color: var(--ink-mute);
+  font-size: 10pt;
+}
+
+h1 + p {
+  margin: 0 0 14pt 0;
+  padding-bottom: 14pt;
+  border-bottom: 2px solid var(--accent);
+}
+
+/* The "Built by / Built for / Reading time" block */
+h1 + p + p {
+  font-size: 9.5pt;
+  color: var(--ink-mute);
+  margin: 0 0 16pt 0;
+  line-height: 1.7;
+}
+
+h1 + p + p strong {
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* --- Section headers --- */
+h2 {
+  font-family: "Inter", sans-serif;
+  font-size: 11pt;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 22pt 0 10pt 0;
+  padding-bottom: 4pt;
+  border-bottom: 1px solid var(--rule);
+  break-after: avoid;
+}
+
+h2.company-h {
+  text-transform: none;
+  letter-spacing: -0.01em;
+  font-size: 16pt;
+  color: var(--ink);
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 6pt;
+  margin-top: 24pt;
+}
+
+h2.company-h .ticker {
+  font-size: 10pt;
+  color: var(--ink-faint);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  margin-left: 8pt;
+  text-transform: uppercase;
+}
+
+p.stance {
+  font-size: 10.5pt;
+  color: var(--ink-soft);
+  margin: 4pt 0 14pt 0;
+  padding-left: 10pt;
+  border-left: 3px solid var(--accent);
+  break-after: avoid;
+}
+
+p.stance em {
+  font-style: italic;
+}
+
+/* --- Executive summary --- */
+h2.exec-h { color: var(--accent); }
+
+ol {
+  padding-left: 18pt;
+  margin: 8pt 0 14pt 0;
+}
+
+ol li {
+  margin-bottom: 8pt;
+  padding-left: 4pt;
+  line-height: 1.55;
+}
+
+ol li::marker {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+ol li strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* --- Booking bullets --- */
+.bullet {
+  margin: 0 0 14pt 0;
+  padding: 10pt 12pt 10pt 12pt;
+  background: var(--bg-quote);
+  border: 1px solid var(--rule-soft);
+  border-left: 3px solid var(--accent-soft);
+  break-inside: avoid;
+}
+
+.bullet .lead strong {
+  font-weight: 600;
+  font-size: 10.5pt;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+}
+
+.bullet .quote {
+  margin: 6pt 0 8pt 0;
+  padding: 0 0 0 12pt;
+  border-left: 2px solid var(--rule);
+  font-family: "Georgia", "Iowan Old Style", serif;
+  font-style: italic;
+  font-size: 10pt;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.bullet .quote em {
+  font-style: italic;
+}
+
+.bullet .quote .speaker {
+  display: block;
+  margin-top: 4pt;
+  font-style: normal;
+  font-family: "Inter", sans-serif;
+  font-size: 8.5pt;
+  color: var(--ink-faint);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.bullet .implication {
+  font-size: 10pt;
+  color: var(--ink);
+  line-height: 1.55;
+}
+
+.bullet .implication .impl-label {
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+  font-size: 9pt;
+  text-transform: uppercase;
+  margin-right: 4pt;
+}
+
+.bullet .implication strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* --- Generic paragraphs --- */
+p {
+  margin: 0 0 8pt 0;
+}
+
+p strong { font-weight: 600; }
+
+/* --- Tables --- */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 10pt 0 14pt 0;
+  font-size: 9.5pt;
+  break-inside: avoid;
+}
+
+thead th {
+  background: var(--accent);
+  color: #ffffff;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 8.5pt;
+  padding: 6pt 8pt;
+  text-align: left;
+  border: none;
+}
+
+tbody td {
+  padding: 5pt 8pt;
+  border-bottom: 1px solid var(--rule-soft);
+  vertical-align: top;
+  color: var(--ink-soft);
+}
+
+tbody tr:nth-child(even) td {
+  background: var(--bg-soft);
+}
+
+/* --- Horizontal rule --- */
+hr {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: 14pt 0;
+}
+
+/* --- Methodology / Coverage / Cadence sections (numbered list cleanup) --- */
+.methodology ol li, ol li ol {
+  margin-bottom: 4pt;
+}
+
+/* --- End line --- */
+em + em, p > em:only-child {
+  color: var(--ink-faint);
+}
+
+/* Final closing line */
+body > p:last-of-type em {
+  display: block;
+  margin-top: 14pt;
+  text-align: center;
+  color: var(--ink-faint);
+  font-size: 9pt;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Avoid orphans */
+h2, h3 { page-break-after: avoid; }
+.bullet { page-break-inside: avoid; }
+table { page-break-inside: avoid; }
+</style>
+</head>
+<body>
+<h1>Wego Earnings Digest — Edition 01 · 2026Q1</h1>
+<p><em>Prototype built over 2 days during NOC interview prep. Edition 01 covers Booking Holdings only. Not affiliated with Wego.</em></p>
+<p><strong>Built by:</strong> Subhankar Shukla
+<strong>Built for:</strong> the kind of reader Wego Strategy &amp; Planning would be
+<strong>Reading time:</strong> 4 minutes</p>
+<hr />
+<h2 class="exec-h">Executive Summary</h2>
+<p class="exec-intro">Five takeaways from this edition's source company (Booking Holdings, Q1 2026):</p>
+<ol>
+<li><strong>MENA is now publicly priced into global travel earnings.</strong> Booking quantified a 2pp Q1 drag and 3pp Q2 forecast drag from MENA conflict — the first granular disclosure from a major. Wego's 65% MENA mix is no longer narrated in a vacuum.</li>
+<li><strong>Booking's MENA exposure is 4–7%.</strong> That's the new comp anyone evaluating Wego will use — open question whether Wego wants to frame its own MENA share as concentration rather than exposure in the next investor or partner conversation.</li>
+<li><strong>The AI-distribution stack is going public.</strong> Booking named four LLM partners (OpenAI, Google, Anthropic, Amazon) and flagged its Claude Live flagship placement on the call. The window to be Anthropic's <em>regional</em> travel partner — MENA + India outbound — likely closes in 6–12 months.</li>
+<li><strong>Direct-booking is the moat against horizontal AI agents.</strong> Booking is explicit: own the conversion or lose it. Metasearch-only Wego is structurally more exposed; defensibility shifts onto MENA brand + GCC user trust, not funnel ownership.</li>
+<li><strong>Capital conviction at the trough.</strong> Record $3.6B buyback into a guidance cut. The board signal: lean <em>into</em> MENA share now, not away from it.</li>
+</ol>
+<hr />
+<h2 class="company-h">Booking Holdings <span class="ticker">BKNG &middot; 2026Q1</span></h2>
+<p class="stance"><em>MENA disruption real and openly quantified — yet capital conviction high (record buyback) and AI distribution stack visibly broadening.</em></p>
+<p><strong>MENA growth drag.</strong> <em>"We estimate that the Middle East conflict impacted our room night and gross bookings growth by approximately 2 percentage points... excluding this impact, room nights would have been up by approximately 8%."</em> — Glenn Fogel, CEO
+<strong>Implication for Wego:</strong> Booking is publicly de-risking MENA narrative at 2pp Q1 drag. Wego's MENA mix is 65% vs Booking's 4–7%, so the inverse trade is wider — if Wego's April books are flat-or-up YoY, that gap is the single sharpest narrative wedge for Wego's next investor update.</p>
+<p><strong>MENA exposure disclosure.</strong> <em>"Bookers in the Middle East, including Turkey and Egypt, represented approximately 4% of our global room nights in 2025... including inbound, approximately 7%."</em> — Ewout Steenbergen, CFO
+<strong>Implication for Wego:</strong> First-time granular disclosure of Booking's MENA dependence. The 4–7% range is now the comparable that anyone evaluating Wego will use. <strong>Open question:</strong> is the next Wego investor or partner conversation the right moment to disclose Wego's MENA share — and to frame it as concentration, not exposure?</p>
+<p><strong>Q2 guidance — MENA worsens.</strong> <em>"Approximately 3 points of headwind in the second quarter... we have assumed this situation will continue from a direct and indirect impact perspective for 3 months, so for the full second quarter."</em> — Ewout Steenbergen, CFO
+<strong>Implication for Wego:</strong> Booking is modelling Q2 <em>worse</em> than Q1 (3pp vs 2pp). Wego's Q2 narrative starts with this as the industry floor — anything above flat in MENA outperforms the largest comp.</p>
+<p><strong>Capital conviction into the dip.</strong> <em>"$3.6 billion in share repurchases... record... since 2014, we have reduced our share count by over 40% at the average price per share of $93."</em> — Glenn Fogel, CEO
+<strong>Implication for Wego:</strong> Booking is leaning capital return <em>into</em> the disruption — record quarterly buyback during a guidance cut. The strategic-conviction signal is hard to miss: the largest comp is reading this as a moment to over-invest, not pull back. Worth asking what the equivalent posture looks like for Wego at its scale.</p>
+<p><strong>Claude Live flagship placement.</strong> <em>"Maybe you saw the Claude Live advertisement recently where we were right upfront there. Really pleased on that."</em> — Glenn Fogel, CEO
+<strong>Implication for Wego:</strong> Anthropic chose Booking as flagship travel partner. The window for Wego to be the <em>regional</em> travel partner on Claude (MENA + India outbound) is 6–12 months before Anthropic locks in defaults. <strong>This is the most actionable AI-distribution opening in the brief — and the one I'd push hardest on.</strong></p>
+<p><strong>Direct channel as AI moat.</strong> <em>"It's very important to protect customers that are coming direct to us... they have an experience in our environment that is at least as good as they can get at a generic horizontal agent."</em> — Ewout Steenbergen, CFO
+<strong>Implication for Wego:</strong> Booking is framing direct channel as the moat against ChatGPT / Claude horizontal agents. Wego's metasearch model has <em>no</em> direct channel of equivalent depth — the AI-agent threat hits Wego more structurally. The honest read: Wego's defensibility flows from MENA brand + GCC user trust, not from owning a direct booking flow.</p>
+<p><strong>Performance-marketing-platform thesis.</strong> <em>"The possibility or belief that some of these players would go towards a performance marketing platform that we thought would be very advantageous to us given the experiences... at Google."</em> — Glenn Fogel, CEO
+<strong>Implication for Wego:</strong> Booking's bull case on AI distribution: if ChatGPT / Claude monetise via auction bidding (the Google model), Booking's bidding-muscle wins. The same logic could favour Wego's MENA auction expertise — the frame worth testing internally is AI not as disintermediation but as a new auction surface where Wego's regional-CPC data is a moat.</p>
+<p><strong>Agoda AI cost-out.</strong> <em>"Agoda saw a double-digit year-over-year reduction in customer service cost per booking, driven by AI-assisted automation."</em> — Glenn Fogel, CEO
+<strong>Implication for Wego:</strong> Agoda is the Booking-stack APAC brand most adjacent to Wego's SEA + India revenue. Double-digit cost-per-booking reduction widens the unit-economics gap. <strong>This is the second-most actionable item — Wego's customer-service automation roadmap should be benchmarked against this and the gap closed within the year.</strong></p>
+<hr />
+<h2>Methodology</h2>
+<p>Each edition processes competitor earnings calls through a three-pass pipeline:</p>
+<ol>
+<li><strong>Extract</strong> — verbatim transcript → JSONL of passages relevant to one of nine Wego lenses (MENA, India, SEA, AI/distribution, Capital, Marketing/SEO, Partnership, Look-to-book, Forward guidance).</li>
+<li><strong>Synthesize</strong> — passages → strategic bullets, each anchored to a verbatim quote and paired with a Wego implication.</li>
+<li><strong>Compose</strong> — per-company briefs stitched into a single digest with executive summary on top.</li>
+</ol>
+<p><strong>Filter logic:</strong> retain only what is non-obvious, quantified, or wedge-able into a Wego decision. Drop anything a strategy reader can already infer from the press release.</p>
+<p><strong>Source discipline:</strong> every implication traces to a verbatim quote from the company's own earnings call. No paraphrase, no second-hand summary.</p>
+<hr />
+<h2>Edition 01 Coverage</h2>
+<table>
+<thead>
+<tr>
+<th>Company</th>
+<th>Ticker</th>
+<th>Quarter</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Booking Holdings</td>
+<td>BKNG</td>
+<td>2026Q1</td>
+<td>✓ Synthesized</td>
+</tr>
+<tr>
+<td>Expedia Group</td>
+<td>EXPE</td>
+<td>2025Q4</td>
+<td>Planned — Edition 02</td>
+</tr>
+<tr>
+<td>Trip.com Group</td>
+<td>TCOM</td>
+<td>2025Q4</td>
+<td>Planned — Edition 02</td>
+</tr>
+<tr>
+<td>MakeMyTrip</td>
+<td>MMYT</td>
+<td>2026Q3</td>
+<td>Planned — Edition 02</td>
+</tr>
+<tr>
+<td>Tripadvisor</td>
+<td>TRIP</td>
+<td>2025Q4</td>
+<td>Planned — Edition 02</td>
+</tr>
+</tbody>
+</table>
+<p>Edition 01 is a proof-of-concept covering the single most-comparable global travel distributor for Wego (Booking Holdings) at the most recently released quarter. Edition 02 would broaden the panel to the full five-company set once Q1 2026 calls land for the others (May–Jun 2026).</p>
+<hr />
+<h2>Cadence (if continued)</h2>
+<p>Editions would ship within ~5 business days of the latest covered earnings call. The pipeline is reproducible from any markdown editor — no infrastructure required to read, no infrastructure required to extend. Edition 01 is the proof-of-concept; whether Edition 02 ships is a question for the reader, not a commitment from the writer.</p>
+<p><em>— End of Edition 01.</em></p>
+</body>
+</html>
